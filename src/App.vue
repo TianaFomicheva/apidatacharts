@@ -2,7 +2,7 @@
   <div id="app">
 <div id="commonDataField">
   <div v-for="(group, name) in typeGroupsArr" :key="name"  >
-<p>{{ group[1].length }}  {{ $options.OPTIONS_CODES[name] }}</p>
+<p>{{ group.length }}  {{ $options.OPTIONS_CODES[name] }}</p>
   </div>
 </div>
 
@@ -18,8 +18,7 @@ export default {
   components: {},
   data() {
     return {
-      apiData: [],
-     
+      apiData: [],     
       typeGroupsArr : []
     };
   },
@@ -50,26 +49,17 @@ export default {
       for (var j = 0; j < types.length; j++) {
         typeGroups[types[j]] = emptyArr[j];
       }
-      console.log(Object.entries(typeGroups));
       const parsedData = JSON.parse(JSON.stringify(data)).map(
         (data) => data.data
       );
       parsedData.map((item) => {
-        console.log(item);
         Object.entries(typeGroups).forEach(([key, value]) => {
           if (key === item.type.toString()) {
             value.push(item);
           }
         });
       });
-      this.typeGroupsArr = Object.values(Object.entries(JSON.parse(JSON.stringify(typeGroups))))
-      const vall = Object.entries(JSON.parse(JSON.stringify(typeGroups)))
-
-      const valls = {}
-      for (var k = 0; k < vall.length; k++) {
-        valls[vall[k][0]] = vall[k][1]
-      }
-      console.log(Object.entries(valls))
+      this.typeGroupsArr = JSON.parse(JSON.stringify(typeGroups))
     },
   },
   
