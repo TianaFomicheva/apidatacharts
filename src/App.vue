@@ -1,67 +1,78 @@
 <template>
   <div id="app">
+<div id="commonDataField">
+  <div v-for="(group, name) in typeGroupsArr" :key="name"  >
+<p>{{ group[1].length }}  {{ $options.OPTIONS_CODES[name] }}</p>
+  </div>
+</div>
+
+
   </div>
 </template>
 
 <script>
-import { getData } from './api/api.js'
+import { getData } from "./api/api.js";
 
 export default {
-  name: 'App',
-  components: {
-
+  name: "App",
+  components: {},
+  data() {
+    return {
+      apiData: [],
+     
+      typeGroupsArr : []
+    };
   },
-  data(){
-    return{
-      apiData:[],
-      typeGroups:{}
-    }
-  },
 
-  
-  created(){
-    getData(data=>{this.apiData.push(data); this.formatData(data)})
-    
-    // console.log(this.apiData)
-    
+  created() {
+    getData((data) => {
+      this.apiData.push(data);
+      this.formatData(data);
+    });
   },
-  OPTIONS_CODES:{
-    "0": "подразделений ФМС",
-    "1": "ГУВД или МВД региона",
-    "2":"УВД или ОВД района или города",
-    "4": "отделений полиции"
+  OPTIONS_CODES: {
+    0: "подразделений ФМС",
+    1: "ГУВД или МВД региона",
+    2: "УВД или ОВД района или города",
+    4: "отделений полиции",
   },
-  computed:{
-    itemsGroups(){
-
-      console.log(this.apiData.filter(item => Object.keys(this.$options.OPTIONS_CODES).includes(item.data.type)))
-      return this.apiData.filter(item => Object.keys(this.$options.OPTIONS_CODES).includes(item.data.type))
-
-    }
-  },
-  methods:{
-    formatData(data){
- const types = Object.keys(this.$options.OPTIONS_CODES)
-  const emptyArr = []
-  for(var i = 0; i<types.length; i++){
-emptyArr.push([])
-  }
- for(var j = 0; j<types.length; j++){
-   this.typeGroups[types[j]] = emptyArr[j]
-  
- }
- console.log( this.typeGroups)
-    const parsedData = JSON.parse(JSON.stringify(data)).map(data=>data.data); 
-    parsedData.map(item=>{
-    Object.entries(this.typeGroups).forEach(([key,value])=>{if(key===item.type.toString()){value.push(item)}})
-
-    })
-     console.log(this.typeGroups)
+  computed: {
    
-    
+  },
+  methods: {
+    formatData(data) {
+      const types = Object.keys(this.$options.OPTIONS_CODES);
+      const emptyArr = [];
+      const typeGroups = {}
+      for (var i = 0; i < types.length; i++) {
+        emptyArr.push([]);
+      }
+      for (var j = 0; j < types.length; j++) {
+        typeGroups[types[j]] = emptyArr[j];
+      }
+      console.log(Object.entries(typeGroups));
+      const parsedData = JSON.parse(JSON.stringify(data)).map(
+        (data) => data.data
+      );
+      parsedData.map((item) => {
+        console.log(item);
+        Object.entries(typeGroups).forEach(([key, value]) => {
+          if (key === item.type.toString()) {
+            value.push(item);
+          }
+        });
+      });
+      this.typeGroupsArr = Object.values(Object.entries(JSON.parse(JSON.stringify(typeGroups))))
+      const vall = Object.entries(JSON.parse(JSON.stringify(typeGroups)))
 
-    }
-}
-}
+      const valls = {}
+      for (var k = 0; k < vall.length; k++) {
+        valls[vall[k][0]] = vall[k][1]
+      }
+      console.log(Object.entries(valls))
+    },
+  },
+  
+};
 </script>
 
