@@ -20,17 +20,9 @@ export default {
 
   
   created(){
-    getData(data=>{this.apiData.push(data)})
-     const types = Object.keys(this.$options.OPTIONS_CODES)
-  const emptyArr = []
-  for(var i = 0; i<types.length; i++){
-emptyArr.push([])
-  }
- for(var j = 0; j<types.length; j++){
-   this.typeGroups[types[j]] = emptyArr[j]
-  
- }
-    Object.entries(this.typeGroups).map(([key,val])=>{val.push("1"); console.log(key, val)})
+    getData(data=>{this.apiData.push(data); this.formatData(data)})
+    
+    // console.log(this.apiData)
     
   },
   OPTIONS_CODES:{
@@ -46,7 +38,30 @@ emptyArr.push([])
       return this.apiData.filter(item => Object.keys(this.$options.OPTIONS_CODES).includes(item.data.type))
 
     }
+  },
+  methods:{
+    formatData(data){
+ const types = Object.keys(this.$options.OPTIONS_CODES)
+  const emptyArr = []
+  for(var i = 0; i<types.length; i++){
+emptyArr.push([])
   }
+ for(var j = 0; j<types.length; j++){
+   this.typeGroups[types[j]] = emptyArr[j]
+  
+ }
+ console.log( this.typeGroups)
+    const parsedData = JSON.parse(JSON.stringify(data)).map(data=>data.data); 
+    parsedData.map(item=>{
+    Object.entries(this.typeGroups).forEach(([key,value])=>{if(key===item.type.toString()){value.push(item)}})
+
+    })
+     console.log(this.typeGroups)
+   
+    
+
+    }
+}
 }
 </script>
 
