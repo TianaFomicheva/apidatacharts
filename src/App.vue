@@ -1,6 +1,8 @@
 <template>
-  <div id="app" style="display: flex">
-    <div id="sidebar" style="width: 15%; background: #ddd">
+  <v-app id="app" style="display:flex" row>
+
+    <v-layout row>
+   <div id="sidebar" class="grey lighten-3" style="width: 15%;">
       <div
         v-for="(group, name) in typeGroupsArr"
         :key="name"
@@ -8,11 +10,11 @@
       >
         <p>{{ $options.OPTIONS_CODES[name].short }}</p>
       </div>
-    </div>
+    </div >
     <div id="content" style="width: 85%">
       <div v-if="!selectedGroup">
         <div>
-          <input v-model="filter" @keydown.enter="loadData(filter)" />
+          <v-text-field v-model="filter" @keydown.enter="loadData(filter)" ></v-text-field>
         </div>
         <div
           id="commonDataField"
@@ -37,10 +39,12 @@
             :key="JSON.stringify(apiData)"
           />
         </div>
-      </div>
+         </div>
       <SelectedTypeList v-if="selectedGroup" :list="selectedGroup" />
     </div>
-  </div>
+    </v-layout>
+
+  </v-app>
 </template>
 
 <script>
@@ -88,6 +92,7 @@ export default {
   },
   methods: {
     loadData(filter) {
+      console.log(filter)
       getData((data) => {
         this.apiData = [];
         (this.typeGroupsArr = []), (this.typePercents = []);
@@ -124,4 +129,8 @@ export default {
   },
 };
 </script>
-
+<style scoped>
+.layout{
+  margin:0
+}
+</style>

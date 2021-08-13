@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="filteredList.length>0">
-      <input v-model="filter" @keydown.enter="filterData(filter)" />
+      <v-text-field v-model="filter" @keydown.enter="filterData(filter)" ></v-text-field>
     </div>
     <div v-for="item in filteredList" :key="item.name">
       {{ item.name }}
