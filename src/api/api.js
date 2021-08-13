@@ -13,10 +13,10 @@ var options = {
     body: JSON.stringify({query: query})
 }
 
-export const getData = (cb)=> {
-    
-  fetch(url, options)
+export const getData = (cb, filter = null)=> {
+ fetch(url, options)
 .then(response => response.json())
-.then(result => {cb(result.suggestions)})
+.then(data=>{return filter ? data.suggestions.filter(item=> item.data.type == filter.toString() || item.data.name.indexOf(filter) !== -1 ) : data.suggestions})
+.then(result => {console.log(result);cb(result)})
 .catch(error => console.log("error", error))
 }
