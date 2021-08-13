@@ -1,29 +1,44 @@
 <template>
-  <div id="app">
-    <div>
-      <input v-model="filter" @keydown.enter="loadData(filter)" />
-    </div>
-    <div
-      id="commonDataField"
-      style="width: 100%; display: flex; background: #ddd"
-    >
+  <div id="app" style="display: flex">
+    <div id="sidebar" style="width: 15%; background: #ddd">
       <div
         v-for="(group, name) in typeGroupsArr"
         :key="name"
-        style="width: calc(25% - 5px); display: inline-block"
+        @click="selectGroup(group)"
       >
-        <p>{{ group.length }}</p>
-        <p>{{ $options.OPTIONS_CODES[name] }}</p>
+        <p>{{ $options.OPTIONS_CODES[name].short }}</p>
       </div>
     </div>
-    <div style="height: 200px; width: auto">
-      <PieChart
-        v-if="apiData.length > 0"
-        :labels="typeNames"
-        :percents="typePercents"
-        style="height: 100%"
-        :key="JSON.stringify(apiData)"
-      />
+    <div id="content" style="width: 85%">
+      <div v-if="!selectedGroup">
+        <div>
+          <input v-model="filter" @keydown.enter="loadData(filter)" />
+        </div>
+        <div
+          id="commonDataField"
+          style="width: 100%; display: flex; background: #ddd"
+        >
+          <div
+            v-for="(group, name) in typeGroupsArr"
+            :key="name"
+            style="width: calc(25% - 5px); display: inline-block"
+            @click="selectGroup(group)"
+          >
+            <p>{{ group.length }}</p>
+            <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+          </div>
+        </div>
+        <div style="height: 200px; width: auto">
+          <PieChart
+            v-if="apiData.length > 0"
+            :labels="typeLongNames"
+            :percents="typePercents"
+            style="height: 100%"
+            :key="JSON.stringify(apiData)"
+          />
+        </div>
+      </div>
+      <SelectedTypeList v-if="selectedGroup" :list="selectedGroup" />
     </div>
   </div>
 </template>
@@ -31,11 +46,13 @@
 <script>
 import { getData } from "./api/api.js";
 import PieChart from "./components/PieChart.vue";
+import SelectedTypeList from "./components/SelectedTypeList.vue";
 
 export default {
   name: "App",
   components: {
     PieChart,
+    SelectedTypeList,
   },
   data() {
     return {
@@ -43,6 +60,7 @@ export default {
       apiData: [],
       typeGroupsArr: [],
       typePercents: [],
+      selectedGroup: null,
     };
   },
 
@@ -56,14 +74,16 @@ export default {
     });
   },
   OPTIONS_CODES: {
-    0: "подразделений ФМС",
-    1: "ГУВД или МВД региона",
-    2: "УВД или ОВД района или города",
-    3: "отделений полиции",
+    0: { short: "ФМС", long: "подразделений ФМС" },
+    1: { short: "ГУВД или МВД", long: "ГУВД или МВД региона" },
+    2: { short: "УВД или ОВД", long: "УВД или ОВД района или города" },
+    3: { short: "отделений полиции", long: "отделений полиции" },
   },
   computed: {
-    typeNames() {
-      return Object.values(this.$options.OPTIONS_CODES);
+    typeLongNames() {
+      return Object.values(this.$options.OPTIONS_CODES).map(
+        (item) => item.long
+      );
     },
   },
   methods: {
@@ -97,6 +117,9 @@ export default {
         (item) => item[1].length
       );
       this.typeGroupsArr = typeGroups;
+    },
+    selectGroup(group) {
+      this.selectedGroup = group;
     },
   },
 };
