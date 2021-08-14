@@ -1,69 +1,81 @@
 <template>
   <v-app id="app" flex row>
-
     <v-layout row>
-   <div id="sidebar" class="grey lighten-3" >
-      <div
-        v-for="(group, name) in typeGroupsArr"
-        :key="name"
-        @click="selectGroup(group)"
-      >
-        <p>{{ $options.OPTIONS_CODES[name].short }}</p>
-      </div>
-    </div >
-    <div id="content" >
-       <div>
-          <v-text-field v-model="filter" @keydown.enter="!selectedGroup ? loadData(filter) : setFilter(filter)" ></v-text-field>
-        </div>
-      <div v-if="!selectedGroup">
-       
+      <div id="sidebar" class="grey lighten-3">
         <div
-          id="commonDataField"      
+          v-for="(group, name) in typeGroupsArr"
+          :key="name"
+          @click="selectGroup(group)"
         >
-          <div
-            v-for="(group, name) in typeGroupsArr"
-            :key="name"         
-            @click="selectGroup(group)"
-          >
-            <p>{{ group.length }}</p>
-            <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+          <p>{{ $options.OPTIONS_CODES[name].short }}</p>
+        </div>
+      </div>
+      <div id="content">
+        <div id="searchRow">
+          <span>Поиск</span>
+          <v-text-field
+            prepend-icon="mdi-clipboard-text-search-outline"
+            label="Поиск по названия и коду отделения"
+            outlined
+            v-model="filter"
+            @input="filterData(filter)"
+          ></v-text-field>
+        </div>
+        <div v-if="!selectedGroup" id="mainPage">
+          <div id="mainColumn">
+            <div id="commonDataField">
+              <div
+                v-for="(group, name) in typeGroupsArr"
+                :key="name"
+                @click="selectGroup(group)"
+              >
+                <p>{{ group.length }}</p>
+                <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+              </div>
+            </div>
+
+            <div style="height: 200px; width: auto">
+              <BarChart
+                v-if="apiData.length > 0"
+                :labels="typeShortNames"
+              :percents="typePercents"
+              :colors="typeColors"
+               
+                class="chartImg"
+                :key="JSON.stringify(apiData)"
+              />
+            </div>
+          </div>
+          <div id="pieChartColumn">
+            <DoughnutChart
+              v-if="apiData.length > 0"
+              :labels="typeLongNames"
+              :percents="typePercents"
+              :colors="typeColors"
+              class="chartImg"
+              :key="JSON.stringify(apiData)"
+            />
           </div>
         </div>
-        <div style="height: 200px; width: auto">
-          <PieChart
-            v-if="apiData.length > 0"
-            :labels="typeLongNames"
-            :percents="typePercents"
-            class="chartImg"
-            :key="JSON.stringify(apiData)"
-          />
-        </div>
-        <div style="height: 200px; width: auto">
-          <BarChart
-            v-if="apiData.length > 0"
-            :labels="typeLongNames"
-            :percents="typePercents"
-            class="chartImg"
-            :key="JSON.stringify(apiData)"
-          />
-        </div>
-         </div>
-      <SelectedTypeList v-if="selectedGroup" :list="selectedGroup" :filter="filter" :key="filter" />
-    </div>
+        <SelectedTypeList
+          v-if="selectedGroup"
+          :list="selectedGroup"
+          :filter="filter"
+          :key="filter"
+        />
+      </div>
     </v-layout>
-
   </v-app>
 </template>
 
 <script>
 import { getData } from "./api/api.js";
-import {PieChart, BarChart, SelectedTypeList} from "./components";
-
+import { DoughnutChart, BarChart, SelectedTypeList } from "./components";
 
 export default {
   name: "App",
   components: {
-    PieChart,
+    DoughnutChart,
     BarChart,
     SelectedTypeList,
   },
@@ -74,6 +86,7 @@ export default {
       typeGroupsArr: [],
       typePercents: [],
       selectedGroup: null,
+      
     };
   },
 
@@ -84,13 +97,22 @@ export default {
       this.apiData.push(data);
 
       this.formatData(data);
+      
     });
   },
   OPTIONS_CODES: {
-    0: { short: "ФМС", long: "подразделений ФМС" },
-    1: { short: "ГУВД или МВД", long: "ГУВД или МВД региона" },
-    2: { short: "УВД или ОВД", long: "УВД или ОВД района или города" },
-    3: { short: "отделений полиции", long: "отделений полиции" },
+    0: { short: "ФМС", long: "подразделений ФМС", color: "pink" },
+    1: { short: "ГУВД или МВД", long: "ГУВД или МВД региона", color: "grey" },
+    2: {
+      short: "УВД или ОВД",
+      long: "УВД или ОВД района или города",
+      color: "blue",
+    },
+    3: {
+      short: "отделений полиции",
+      long: "отделений полиции",
+      color: "yellow",
+    },
   },
   computed: {
     typeLongNames() {
@@ -98,13 +120,26 @@ export default {
         (item) => item.long
       );
     },
+    typeShortNames() {
+      return Object.values(this.$options.OPTIONS_CODES).map(
+        (item) => item.short
+      );
+    },
+    typeColors() {
+      return Object.values(this.$options.OPTIONS_CODES).map(
+        (item) => item.color
+      );
+    },
   },
   methods: {
-    setFilter(filter){
-      this.filter = filter
+    filterData(filter) {
+      !this.selectedGroup ? this.loadData(filter) : this.setFilter(filter);
+    },
+    setFilter(filter) {
+      this.filter = filter;
     },
     loadData(filter) {
-      console.log(filter)
+      console.log(filter);
       getData((data) => {
         this.apiData = [];
         (this.typeGroupsArr = []), (this.typePercents = []);
@@ -137,28 +172,49 @@ export default {
     },
     selectGroup(group) {
       this.selectedGroup = group;
-      this.filter = ''
+      this.filter = "";
     },
   },
 };
 </script>
+
 <style scoped>
-.layout{
-  margin:0
+.layout {
+  margin: 0;
 }
-#commonDataField{
+#commonDataField {
   display: flex;
   justify-content: space-between;
   background: #ddd;
 }
-.chartImg{
+.chartImg {
   height: 100%;
 }
-#sidebar{
-  width:15%;
+#sidebar {
+  width: 15%;
   padding: 10px;
 }
-#content{
-  width:85%
+#content {
+  width: 85%;
+}
+#mainColumn {
+  width: 70%;
+  display: inline-block;
+}
+#pieChartColumn {
+  width: 30%;
+  display: inline-block;
+}
+#mainPage {
+  display: flex;
+}
+#searchRow {
+  display: flex;
+  align-items: center;
+}
+</style>
+<style>
+.v-text-field__details {
+  display: none !important;
 }
 </style>

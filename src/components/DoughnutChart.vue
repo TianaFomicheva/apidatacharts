@@ -1,23 +1,27 @@
 <script>
-import { Pie } from 'vue-chartjs'
+import { Doughnut } from 'vue-chartjs'
 export default {
-    extends: Pie,
-   name: 'PieChart',
+    extends: Doughnut,
+   name: 'DoughnutChart',
    props:{
        labels:{
            type: Array
        },
        percents:{
            type: Array
+       
+       },
+       colors:{
+           type: Array
        }
    },
 
    mounted(){
-       console.log(JSON.parse(JSON.stringify(this.percents) ))
        this.renderChart({
-           labels: Object.values((this.labels)),
+           labels: Object.values(this.labels),
            datasets:[{
-               data: JSON.parse(JSON.stringify(this.percents))
+               data: this.percents,
+               backgroundColor: this.colors,
            }]
            
 

@@ -1,5 +1,5 @@
-import PieChart from './PieChart.vue'
+import DoughnutChart from './DoughnutChart.vue'
 import BarChart from './BarChart.vue'
 import SelectedTypeList from './SelectedTypeList.vue'
 
-export  {PieChart, BarChart, SelectedTypeList}
+export  {DoughnutChart, BarChart, SelectedTypeList}
