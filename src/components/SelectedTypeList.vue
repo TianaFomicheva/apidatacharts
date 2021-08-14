@@ -1,8 +1,10 @@
 <template>
   <div>   
-    <div v-for="item in filteredList" :key="item.name">
-      {{ item.name }}
-    </div>
+    <table>
+    <tr v-for="item in filteredList" :key="item.name">
+     <td> {{ item.code }} </td> <td> {{ item.name }} </td> <td> {{ item.region_code }} </td>
+    </tr>
+    </table>
   </div>
 </template>
 
@@ -29,3 +31,12 @@ export default {
   }
 };
 </script>
+<style scoped>
+table{
+  width:100%;
+}
+td{
+  padding-left: 25px;
+  padding-right: 25px;
+}
+</style>

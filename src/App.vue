@@ -7,7 +7,7 @@
           :key="name"
           @click="selectGroup(group)"
         >
-          <p>{{ $options.OPTIONS_CODES[name].short }}</p>
+          <p class="sidebarItem">{{ $options.OPTIONS_CODES[name].short }}</p>
         </div>
       </div>
       <div id="content">
@@ -23,24 +23,25 @@
         </div>
         <div v-if="!selectedGroup" id="mainPage">
           <div id="mainColumn">
-            <div id="commonDataField">
-              <div
-                v-for="(group, name) in typeGroupsArr"
-                :key="name"
-                @click="selectGroup(group)"
-              >
-                <p>{{ group.length }}</p>
-                <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+            <div id="commonDataFieldWrapper">
+              <p id="commonDataTitle">Общие данные</p>
+              <div id="commonDataField">
+                <div
+                  v-for="(group, name) in typeGroupsArr"
+                  :key="name"
+                  @click="selectGroup(group)"
+                >
+                  <p class="groupCount">{{ group.length }}</p>
+                  <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+                </div>
               </div>
             </div>
-
             <div style="height: 200px; width: auto">
               <BarChart
                 v-if="apiData.length > 0"
                 :labels="typeShortNames"
-              :percents="typePercents"
-              :colors="typeColors"
-               
+                :percents="typePercents"
+                :colors="typeColors"
                 class="chartImg"
                 :key="JSON.stringify(apiData)"
               />
@@ -53,6 +54,7 @@
               :percents="typePercents"
               :colors="typeColors"
               class="chartImg"
+              id="pieChartImg"
               :key="JSON.stringify(apiData)"
             />
           </div>
@@ -86,7 +88,6 @@ export default {
       typeGroupsArr: [],
       typePercents: [],
       selectedGroup: null,
-      
     };
   },
 
@@ -97,7 +98,6 @@ export default {
       this.apiData.push(data);
 
       this.formatData(data);
-      
     });
   },
   OPTIONS_CODES: {
@@ -151,11 +151,11 @@ export default {
       const types = Object.keys(this.$options.OPTIONS_CODES);
       const emptyArr = [];
       const typeGroups = {};
-      for (var i = 0; i < types.length; i++) {
+      for (let i = 0; i < types.length; i++) {
         emptyArr.push([]);
       }
-      for (var j = 0; j < types.length; j++) {
-        typeGroups[types[j]] = emptyArr[j];
+      for (let i = 0; i < types.length; i++) {
+        typeGroups[types[i]] = emptyArr[i];
       }
       const parsedData = data.map((data) => data.data);
       parsedData.map((item) => {
@@ -182,13 +182,16 @@ export default {
 .layout {
   margin: 0;
 }
+#commonDataFieldWrapper {  
+  background: #ddd;
+  padding: 10px;
+}
+#commonDataTitle {
+  font-size: 24px;
+}
 #commonDataField {
   display: flex;
   justify-content: space-between;
-  background: #ddd;
-}
-.chartImg {
-  height: 100%;
 }
 #sidebar {
   width: 15%;
@@ -211,6 +214,12 @@ export default {
 #searchRow {
   display: flex;
   align-items: center;
+}
+.sidebarItem {
+  cursor: pointer;
+}
+.groupCount {
+  font-size: 24px;
 }
 </style>
 <style>
