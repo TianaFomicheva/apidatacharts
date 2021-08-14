@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <div v-if="filteredList.length>0">
-      <v-text-field v-model="filter" @keydown.enter="filterData(filter)" ></v-text-field>
-    </div>
+  <div>   
     <div v-for="item in filteredList" :key="item.name">
       {{ item.name }}
     </div>
@@ -12,15 +9,13 @@
 <script>
 export default {
   name: "SelectedTypeList",
-  data() {
-    return {
-      filter: "",
-    };
-  },
   props: {
     list: {
       type: Array,
     },
+    filter:{
+      type: String
+    }
   },
   computed:{
       filteredList(){

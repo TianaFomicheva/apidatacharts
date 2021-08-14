@@ -1,8 +1,8 @@
 <template>
-  <v-app id="app" style="display:flex" row>
+  <v-app id="app" flex row>
 
     <v-layout row>
-   <div id="sidebar" class="grey lighten-3" style="width: 15%;">
+   <div id="sidebar" class="grey lighten-3" >
       <div
         v-for="(group, name) in typeGroupsArr"
         :key="name"
@@ -11,19 +11,18 @@
         <p>{{ $options.OPTIONS_CODES[name].short }}</p>
       </div>
     </div >
-    <div id="content" style="width: 85%">
-      <div v-if="!selectedGroup">
-        <div>
-          <v-text-field v-model="filter" @keydown.enter="loadData(filter)" ></v-text-field>
+    <div id="content" >
+       <div>
+          <v-text-field v-model="filter" @keydown.enter="!selectedGroup ? loadData(filter) : setFilter(filter)" ></v-text-field>
         </div>
+      <div v-if="!selectedGroup">
+       
         <div
-          id="commonDataField"
-          style="width: 100%; display: flex; background: #ddd"
+          id="commonDataField"      
         >
           <div
             v-for="(group, name) in typeGroupsArr"
-            :key="name"
-            style="width: calc(25% - 5px); display: inline-block"
+            :key="name"         
             @click="selectGroup(group)"
           >
             <p>{{ group.length }}</p>
@@ -35,12 +34,21 @@
             v-if="apiData.length > 0"
             :labels="typeLongNames"
             :percents="typePercents"
-            style="height: 100%"
+            class="chartImg"
+            :key="JSON.stringify(apiData)"
+          />
+        </div>
+        <div style="height: 200px; width: auto">
+          <BarChart
+            v-if="apiData.length > 0"
+            :labels="typeLongNames"
+            :percents="typePercents"
+            class="chartImg"
             :key="JSON.stringify(apiData)"
           />
         </div>
          </div>
-      <SelectedTypeList v-if="selectedGroup" :list="selectedGroup" />
+      <SelectedTypeList v-if="selectedGroup" :list="selectedGroup" :filter="filter" :key="filter" />
     </div>
     </v-layout>
 
@@ -49,13 +57,14 @@
 
 <script>
 import { getData } from "./api/api.js";
-import PieChart from "./components/PieChart.vue";
-import SelectedTypeList from "./components/SelectedTypeList.vue";
+import {PieChart, BarChart, SelectedTypeList} from "./components";
+
 
 export default {
   name: "App",
   components: {
     PieChart,
+    BarChart,
     SelectedTypeList,
   },
   data() {
@@ -91,6 +100,9 @@ export default {
     },
   },
   methods: {
+    setFilter(filter){
+      this.filter = filter
+    },
     loadData(filter) {
       console.log(filter)
       getData((data) => {
@@ -125,6 +137,7 @@ export default {
     },
     selectGroup(group) {
       this.selectedGroup = group;
+      this.filter = ''
     },
   },
 };
@@ -132,5 +145,20 @@ export default {
 <style scoped>
 .layout{
   margin:0
+}
+#commonDataField{
+  display: flex;
+  justify-content: space-between;
+  background: #ddd;
+}
+.chartImg{
+  height: 100%;
+}
+#sidebar{
+  width:15%;
+  padding: 10px;
+}
+#content{
+  width:85%
 }
 </style>
