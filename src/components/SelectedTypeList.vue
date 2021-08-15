@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     filteredList() {
-      return  Object.values(this.list)[0].filter(item => item.name.search(new RegExp(this.filter, "i")) !== -1 || item.code.search(new RegExp(this.filter, "i")) !== -1) 
+        return  Object.values(this.list)[0].filter(item => item.name.search(new RegExp(this.filter, "i")) !== -1 || item.code.search(new RegExp(this.filter, "i")) !== -1) 
     },
   },
   methods: {

@@ -1,12 +1,12 @@
 <template>
   <v-simple-table>
-    <template  v-slot:top><div style="text-align:right;padding-right:16px;">Всего: {{ sum }}</div></template>
+    <template  v-slot:top><div id="tableHeader">Всего: {{ sum }}</div></template>
     <template v-slot:default>
       <thead>        
       </thead>
       <tbody>
         <tr
-          v-for="item in JSON.parse(JSON.stringify(groupsList))"
+          v-for="item in groupsList"
           :key="item.name"
         >
           <td>
@@ -49,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    this.sum = this.counts.reduce((a, b) => a + b, 0)
+    this.sum = this.counts.reduce((a, b) => a + b)
     for (let i = 0; i < this.labels.length; i++) {
       this.groupsList[i] = {}
       this.groupsList[i]['name'] = this.labels[i]
@@ -61,3 +61,9 @@ export default {
   },
 }
 </script>
+<style scoped>
+#tableHeader{
+   text-align:right;
+   padding-right:16px;
+}
+</style>
