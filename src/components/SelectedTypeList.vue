@@ -1,12 +1,26 @@
 <template>
-  <div>   
-    <table>
-    <tr v-for="item in filteredList" :key="item.name">
-     <td> {{ item.code }} </td> <td> {{ item.name }} </td> <td> {{ item.region_code }} </td>
-    </tr>
-    </table>
-  </div>
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        
+      </thead>
+      <tbody>
+        <tr
+         v-for="item in filteredList" :key="item.name"
+         
+        >
+          <td>{{ item.code}}</td>
+          <td class="text-left">{{ item.name }}</td>
+          <td class="text-center">{{ item.region_code }}</td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
 </template>
+
+
+
+
 
 <script>
 export default {

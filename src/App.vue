@@ -1,7 +1,9 @@
 <template>
   <v-app id="app" flex row>
+    <v-container>
     <v-layout row>
-      <div id="sidebar" class="grey lighten-3">
+      <div id="sidebar" >
+        <p class="sidebarItem" @click="selectedGroup = null">Главная<p>
         <div
           v-for="(group, name) in typeGroupsArr"
           :key="name"
@@ -12,7 +14,7 @@
       </div>
       <div id="content">
         <div id="searchRow">
-          <span>Поиск</span>
+          <span class="title">Поиск</span>
           <v-text-field
             prepend-icon="mdi-clipboard-text-search-outline"
             label="Поиск по названия и коду отделения"
@@ -24,19 +26,20 @@
         <div v-if="!selectedGroup" id="mainPage">
           <div id="mainColumn">
             <div id="commonDataFieldWrapper">
-              <p id="commonDataTitle">Общие данные</p>
+              <p class="title">Общие данные</p>
               <div id="commonDataField">
                 <div
                   v-for="(group, name) in typeGroupsArr"
                   :key="name"
-                  @click="selectGroup(group)"
+                  
                 >
                   <p class="groupCount">{{ group.length }}</p>
                   <p>{{ $options.OPTIONS_CODES[name].long }}</p>
+                  <div @click="selectGroup(group)" class="link"><v-icon>mdi-arrow-right</v-icon>Перейти</div>
                 </div>
               </div>
             </div>
-            <div style="height: 200px; width: auto">
+            <div id="barChartWrapper">
               <BarChart
                 v-if="apiData.length > 0"
                 :labels="typeShortNames"
@@ -47,17 +50,19 @@
               />
             </div>
           </div>
-          <div id="pieChartColumn">
+          <div id="doughnutChartColumn">
             <DoughnutChart
               v-if="apiData.length > 0"
-              :labels="typeLongNames"
+              :labels="typeShortNames"
               :percents="typePercents"
               :colors="typeColors"
               class="chartImg"
-              id="pieChartImg"
+              id="doughnutChartImg"
               :key="JSON.stringify(apiData)"
             />
+            <TableData v-if="apiData.length > 0"   :colors="typeColors" :labels="typeShortNames" :percents="typePercents" :key="JSON.stringify(apiData).slice(-1,1)"/>
           </div>
+         
         </div>
         <SelectedTypeList
           v-if="selectedGroup"
@@ -67,18 +72,20 @@
         />
       </div>
     </v-layout>
+     </v-container>
   </v-app>
 </template>
 
 <script>
 import { getData } from "./api/api.js";
-import { DoughnutChart, BarChart, SelectedTypeList } from "./components";
+import { DoughnutChart, BarChart, TableData, SelectedTypeList } from "./components";
 
 export default {
   name: "App",
   components: {
     DoughnutChart,
     BarChart,
+    TableData,
     SelectedTypeList,
   },
   data() {
@@ -180,15 +187,13 @@ export default {
 
 <style scoped>
 .layout {
-  margin: 0;
+  margin-top: 10px;
 }
 #commonDataFieldWrapper {  
-  background: #ddd;
+  background: #ebebeb;
   padding: 10px;
 }
-#commonDataTitle {
-  font-size: 24px;
-}
+
 #commonDataField {
   display: flex;
   justify-content: space-between;
@@ -196,34 +201,62 @@ export default {
 #sidebar {
   width: 15%;
   padding: 10px;
+  padding-top:70px;
 }
 #content {
   width: 85%;
 }
 #mainColumn {
-  width: 70%;
+  width: calc(70% - 20px);
   display: inline-block;
 }
-#pieChartColumn {
+#doughnutChartColumn {
   width: 30%;
   display: inline-block;
 }
 #mainPage {
   display: flex;
+  justify-content: space-between;
 }
 #searchRow {
   display: flex;
   align-items: center;
+
 }
 .sidebarItem {
   cursor: pointer;
+  padding-bottom:15px
 }
 .groupCount {
   font-size: 24px;
 }
+.link{
+  cursor: pointer;
+}
+.title{
+  font-size: 20px;
+  font-weight: bold;
+}
+#barChartWrapper{
+  margin-top: 20px;
+}
+
 </style>
 <style>
+#app{
+  background: #f5f5f5;
+}
 .v-text-field__details {
   display: none !important;
+}
+.chartImg, .v-input__slot,#doughnutChartColumn{
+  background: #fff !important;
+}
+.v-input{
+  margin-left: 10px !important;
+}
+#bar-chart{
+  height:200px !important;
+  width:100% !important;
 }
 </style>
