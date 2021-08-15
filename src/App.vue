@@ -116,10 +116,11 @@ export default {
       this.apiData = [];
       this.apiData.push(data);
       this.formatData(data);
-      this.typeCounts = Object.values(this.typeGroups).map((item) => item.length);
-
+      this.typeCounts = Object.values(this.typeGroups).map(
+        (item) => item.length
+      );
     });
-      },
+  },
   OPTIONS_CODES: {
     0: { short: "ФМС", long: "подразделений ФМС", color: "#ff5a45" },
     1: {
@@ -168,11 +169,7 @@ export default {
   },
 
   methods: {
-    filterData(filter) {
-     this.filter = filter;
-    this.typeCounts = Object.values(this.typeGroupsFiltered).map((item) => item.length);
-      
-    },
+    
     loadData() {
       getData((data) => {
         this.apiData = [];
@@ -192,7 +189,7 @@ export default {
         typeGroupsObj[types[i]] = emptyArr[i];
       }
 
-         JSON.parse(JSON.stringify(data))
+      JSON.parse(JSON.stringify(data))
         .map((data) => data.data)
         .map((item) => {
           Object.entries(typeGroupsObj).forEach(([key, value]) => {
@@ -202,8 +199,12 @@ export default {
           });
         });
       this.typeGroups = typeGroupsObj;
-
-     
+    },
+    filterData(filter) {
+      this.filter = filter;
+      this.typeCounts = Object.values(this.typeGroupsFiltered).map(
+        (item) => item.length
+      );
     },
     selectGroup(name) {
       this.selectedGroup = {};
@@ -211,14 +212,13 @@ export default {
         JSON.stringify(this.typeGroups[name])
       );
     },
-   
   },
 };
 </script>
 
 <style scoped>
 .layout {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 #commonDataFieldWrapper {
   background: #ebebeb;
@@ -232,7 +232,7 @@ export default {
 #sidebar {
   width: 15%;
   padding: 10px;
-  padding-top: 70px;
+  padding-top: 90px;
 }
 #content {
   width: 85%;
@@ -248,6 +248,7 @@ export default {
 #mainPage {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 }
 #searchRow {
   display: flex;
@@ -259,6 +260,7 @@ export default {
 }
 .groupCount {
   font-size: 24px;
+  font-weight: bold;
 }
 .link {
   cursor: pointer;
@@ -268,7 +270,7 @@ export default {
   font-weight: bold;
 }
 #barChartWrapper {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 .commonDataItem {
   padding-right: 10px;
