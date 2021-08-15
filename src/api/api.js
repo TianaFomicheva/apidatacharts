@@ -16,7 +16,7 @@ var options = {
 export const getData = (cb, filter = null)=> {
  fetch(url, options)
 .then(response => response.json())
-.then(data=>{return filter ? data.suggestions.filter(item=> item.data.code.indexOf(filter) !== -1 || item.data.name.indexOf(filter) !== -1 ) : data.suggestions})
+.then(data=>{return filter ? data.suggestions.filter(item=> item.data.code.search(new RegExp(filter, "i")) !== -1 || item.data.name.search(new RegExp(filter, "i")) !== -1 ) : data.suggestions})
 .then(result =>JSON.parse(JSON.stringify(result)))
 .then(result => {cb(result)})
 .catch(error => console.log("error", error))

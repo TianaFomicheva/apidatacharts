@@ -7,7 +7,7 @@ export default {
        labels:{
            type: Array
        },
-       percents:{
+       counts:{
            type: Array
        
        },
@@ -17,15 +17,12 @@ export default {
    },
 
    mounted(){
-
        this.renderChart({
            labels: Object.values(this.labels),
            datasets:[{
-               data: this.percents,
+               data: this.counts,
                backgroundColor: this.colors,
-           }]
-           
-
+           }]           
        }, {
             responsive: true,
             maintainAspectRatio: false,
@@ -33,11 +30,6 @@ export default {
                 display: false               
             }
        })
-//        const sum = this.percents.reduce((a, b) => a + b, 0)
-
-
-
    },
-
 }
 </script>

@@ -1,14 +1,8 @@
 <template>
   <v-simple-table>
+    <template  v-slot:top><div style="text-align:right;padding-right:16px;">Всего: {{ sum }}</div></template>
     <template v-slot:default>
-      <thead>
-        <tr>
-          <th class="text-left"></th>
-          <th class="text-right">Всего:</th>
-          <th class="text-left">
-            {{ sum }}
-          </th>
-        </tr>
+      <thead>        
       </thead>
       <tbody>
         <tr
@@ -36,7 +30,7 @@
 </template>
 <script>
 export default {
-  name: "TableData",
+  name: 'TableData',
   data() {
     return {
       groupsList: [],
@@ -47,7 +41,7 @@ export default {
     labels: {
       type: Array,
     },
-    percents: {
+    counts: {
       type: Array,
     },
     colors: {
@@ -55,14 +49,14 @@ export default {
     },
   },
   mounted() {
-    this.sum = this.percents.reduce((a, b) => a + b, 0)
+    this.sum = this.counts.reduce((a, b) => a + b, 0)
     for (let i = 0; i < this.labels.length; i++) {
       this.groupsList[i] = {}
-      this.groupsList[i]["name"] = this.labels[i]
-      this.groupsList[i]["percent"] =
-        this.percents[i] !== 0 ? (this.sum / this.percents[i]) * 100 : 0
-      this.groupsList[i]["count"] = this.percents[i]
-      this.groupsList[i]["color"] = this.colors[i]
+      this.groupsList[i]['name'] = this.labels[i]
+      this.groupsList[i]['percent'] =
+        this.counts[i] !== 0 ? (this.sum / this.counts[i]) * 100 : 0
+      this.groupsList[i]['count'] = this.counts[i]
+      this.groupsList[i]['color'] = this.colors[i]
     }
   },
 }

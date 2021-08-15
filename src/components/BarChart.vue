@@ -1,18 +1,16 @@
 <script>
-import { Bar } from "vue-chartjs"
+import { Bar } from 'vue-chartjs'
 export default {
   extends: Bar,
-  name: "BarChart",
+  name: 'BarChart',
   props: {
     labels: {
       type: Array,
     },
-    percents: {
+    counts: {
       type: Array,
     },
-    colors: {
-      type: Array,
-    },
+
   },
 
   mounted() {
@@ -21,8 +19,8 @@ export default {
         labels: Object.values(this.labels),
         datasets: [
           {
-            data: this.percents,
-            backgroundColor: this.colors,
+            data: this.counts,
+            backgroundColor: '#00cb9a',
           },
         ],
       },
