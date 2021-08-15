@@ -154,11 +154,11 @@ export default {
       const newObj = {};
       for (
         let i = 0;
-        i < Object.entries(JSON.parse(JSON.stringify(this.typeGroups))).length;
+        i < Object.entries(this.typeGroups).length;
         i++
       ) {
-        newObj[Object.keys(JSON.parse(JSON.stringify(this.typeGroups)))[i]] =
-          Object.values(JSON.parse(JSON.stringify(this.typeGroups)))[i].filter(
+        newObj[Object.keys(this.typeGroups)[i]] =
+          Object.values(this.typeGroups)[i].filter(
             (item) =>
               item.name.search(new RegExp(this.filter, "i")) !== -1 ||
               item.code.search(new RegExp(this.filter, "i")) !== -1
@@ -189,7 +189,7 @@ export default {
         typeGroupsObj[types[i]] = emptyArr[i];
       }
 
-      JSON.parse(JSON.stringify(data))
+      data
         .map((data) => data.data)
         .map((item) => {
           Object.entries(typeGroupsObj).forEach(([key, value]) => {
@@ -208,9 +208,8 @@ export default {
     },
     selectGroup(name) {
       this.selectedGroup = {};
-      this.selectedGroup[this.$options.OPTIONS_CODES[name].long] = JSON.parse(
-        JSON.stringify(this.typeGroups[name])
-      );
+      this.selectedGroup[this.$options.OPTIONS_CODES[name].long] = this.typeGroups[name]
+      ;
     },
   },
 };

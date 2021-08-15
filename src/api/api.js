@@ -17,7 +17,6 @@ export const getData = (cb)=> {
  fetch(url, options)
 .then(response => response.json())
 .then(data=> data.suggestions)
-.then(result =>JSON.parse(JSON.stringify(result)))
 .then(result => {cb(result)})
 .catch(error => console.log("error", error))
 }
