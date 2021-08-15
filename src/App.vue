@@ -77,8 +77,8 @@
 </template>
 
 <script>
-import { getData } from "./api/api.js";
-import { DoughnutChart, BarChart, TableData, SelectedTypeList } from "./components";
+import { getData } from "./api/api.js"
+import { DoughnutChart, BarChart, TableData, SelectedTypeList } from "./components"
 
 export default {
   name: "App",
@@ -95,17 +95,17 @@ export default {
       typeGroupsArr: [],
       typePercents: [],
       selectedGroup: null,
-    };
+    }
   },
 
   created() {
     getData((data) => {
-      this.apiData = [];
+      this.apiData = []
 
-      this.apiData.push(data);
+      this.apiData.push(data)
 
-      this.formatData(data);
-    });
+      this.formatData(data)
+    })
   },
   OPTIONS_CODES: {
     0: { short: "ФМС", long: "подразделений ФМС", color: "pink" },
@@ -125,64 +125,65 @@ export default {
     typeLongNames() {
       return Object.values(this.$options.OPTIONS_CODES).map(
         (item) => item.long
-      );
+      )
     },
     typeShortNames() {
       return Object.values(this.$options.OPTIONS_CODES).map(
         (item) => item.short
-      );
+      )
     },
     typeColors() {
       return Object.values(this.$options.OPTIONS_CODES).map(
         (item) => item.color
-      );
+      )
     },
   },
   methods: {
     filterData(filter) {
-      !this.selectedGroup ? this.loadData(filter) : this.setFilter(filter);
+      !this.selectedGroup ? this.loadData(filter) : this.setFilter(filter)
     },
     setFilter(filter) {
-      this.filter = filter;
+      this.filter = filter
     },
     loadData(filter) {
-      console.log(filter);
+      console.log(filter)
       getData((data) => {
-        this.apiData = [];
-        (this.typeGroupsArr = []), (this.typePercents = []);
-        this.apiData.push(data);
-        this.formatData(data);
-      }, filter);
+        this.apiData = []
+        this.typeGroupsArr = []
+        this.typePercents = []
+        this.apiData.push(data)
+        this.formatData(data)
+      }, filter)
     },
     formatData(data) {
-      const types = Object.keys(this.$options.OPTIONS_CODES);
-      const emptyArr = [];
-      const typeGroups = {};
+      const types = Object.keys(this.$options.OPTIONS_CODES)
+      const emptyArr = []
+      const typeGroups = {}
       for (let i = 0; i < types.length; i++) {
-        emptyArr.push([]);
+        emptyArr.push([])
       }
       for (let i = 0; i < types.length; i++) {
-        typeGroups[types[i]] = emptyArr[i];
+        typeGroups[types[i]] = emptyArr[i]
       }
-      const parsedData = data.map((data) => data.data);
+      const parsedData = data.map((data) => data.data)
       parsedData.map((item) => {
         Object.entries(typeGroups).forEach(([key, value]) => {
           if (key === item.type.toString()) {
-            value.push(item);
+            value.push(item)
           }
-        });
-      });
+        })
+      })
       this.typePercents = Object.entries(typeGroups).map(
         (item) => item[1].length
-      );
-      this.typeGroupsArr = typeGroups;
+      )
+      this.typeGroupsArr = typeGroups
     },
     selectGroup(group) {
-      this.selectedGroup = group;
-      this.filter = "";
+      this.selectedGroup = group
+      this.filter = ""
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -225,7 +226,7 @@ export default {
 }
 .sidebarItem {
   cursor: pointer;
-  padding-bottom:15px
+  padding-bottom: 15px;
 }
 .groupCount {
   font-size: 24px;

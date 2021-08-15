@@ -1,5 +1,5 @@
 <script>
-import { Bar } from "vue-chartjs";
+import { Bar } from "vue-chartjs"
 export default {
   extends: Bar,
   name: "BarChart",
@@ -33,7 +33,7 @@ export default {
           display: false,
         },
       }
-    );
+    )
   },
-};
+}
 </script>
