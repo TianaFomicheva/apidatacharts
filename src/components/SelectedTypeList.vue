@@ -58,4 +58,7 @@ thead td{
   vertical-align: bottom;
   padding-left:16px;
 }
+.v-data-table{
+  margin-top: 20px !important;
+}
 </style>

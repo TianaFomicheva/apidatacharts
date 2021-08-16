@@ -10,7 +10,7 @@
             :key="name"
             @click="selectGroup(name)"
           >
-            <p class="sidebarItem">{{ $options.OPTIONS_CODES[name].short }}</p>
+            <p class="sidebarItem">{{ $options.TYPES_OPTIONS[name].short }}</p>
           </div>
         </div>
         <div id="content">
@@ -31,12 +31,12 @@
                 <div id="commonDataField">
                   <div
                     class="commonDataItem"
-                    v-for="(group, name) in typeGroupsFiltered"
-                    :key="name"
+                    v-for="(group, type) in typeGroupsFiltered"
+                    :key="type"
                   >
                     <p class="groupCount">{{ group.length }}</p>
-                    <p>{{ $options.OPTIONS_CODES[name].long }}</p>
-                    <div @click="selectGroup(name)" class="link">
+                    <p>{{ $options.TYPES_OPTIONS[type].long }}</p>
+                    <div @click="selectGroup(type)" class="link">
                       <v-icon>mdi-arrow-right</v-icon>Перейти
                     </div>
                   </div>
@@ -84,16 +84,16 @@
 </template>
 
 <script>
-import { getData } from "./api/api.js";
+import { getData } from './api/api.js';
 import {
   DoughnutChart,
   BarChart,
   TableData,
   SelectedTypeList,
-} from "./components";
+} from './components';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     DoughnutChart,
     BarChart,
@@ -102,10 +102,10 @@ export default {
   },
   data() {
     return {
-      filter: "",
+      filter: '',
       apiData: [],
       filteredData: [],
-      typeGroups: [],
+      typeGroups: {},
       typeCounts: [],
       selectedGroup: {},
     };
@@ -121,7 +121,8 @@ export default {
       );
     });
   },
-  OPTIONS_CODES: {
+  TYPES_OPTIONS: {
+    //можно было вынести в отдельный файл и заимпортить, но т.к. данных немного, сделала здесь как $options
     0: { short: "ФМС", long: "подразделений ФМС", color: "#ff5a45" },
     1: {
       short: "ГУВД или МВД",
@@ -141,17 +142,17 @@ export default {
   },
   computed: {
     typeShortNames() {
-      return Object.values(this.$options.OPTIONS_CODES).map(
+      return Object.values(this.$options.TYPES_OPTIONS).map(
         (item) => item.short
       );
     },
     typeColors() {
-      return Object.values(this.$options.OPTIONS_CODES).map(
+      return Object.values(this.$options.TYPES_OPTIONS).map(
         (item) => item.color
-      );
+      )
     },
     typeGroupsFiltered() {
-      const newObj = {};
+      const newObj = {}
       for (
         let i = 0;
         i < Object.entries(this.typeGroups).length;
@@ -160,59 +161,56 @@ export default {
         newObj[Object.keys(this.typeGroups)[i]] =
           Object.values(this.typeGroups)[i].filter(
             (item) =>
-              item.name.search(new RegExp(this.filter, "i")) !== -1 ||
-              item.code.search(new RegExp(this.filter, "i")) !== -1
+              item.name.search(new RegExp(this.filter, 'i')) !== -1 ||
+              item.code.search(new RegExp(this.filter, 'i')) !== -1
           );
       }
-      return newObj;
+      return newObj
     },
   },
 
-  methods: {
-    
+  methods: {    
     loadData() {
       getData((data) => {
-        this.apiData = [];
-        this.typeGroups = [];
-        (this.typeCounts = []), this.apiData.push(data);
-        this.formatData(this.apiData);
+        this.apiData = []
+        this.typeGroups = []
+        this.typeCounts = []
+        this.apiData.push(data)
+        this.formatData(this.apiData)
       });
     },
     formatData(data) {
-      const types = Object.keys(this.$options.OPTIONS_CODES);
-      const emptyArr = [];
-      const typeGroupsObj = {};
+      //преобразует пришедшие данные в формат {{type:[options]}, {type:[options]}}
+      const types = Object.keys(this.$options.TYPES_OPTIONS)
+      const typeGroupsObj = {}
+      // //создаем объект с пустыми массивами, по количеству элементов TYPES_OPTIONS     
       for (let i = 0; i < types.length; i++) {
-        emptyArr.push([]);
+        typeGroupsObj[types[i]] = []
       }
-      for (let i = 0; i < types.length; i++) {
-        typeGroupsObj[types[i]] = emptyArr[i];
-      }
-
-      data
-        .map((data) => data.data)
+      //заполняем объект значениями
+      data.map((data) => data.data)
         .map((item) => {
           Object.entries(typeGroupsObj).forEach(([key, value]) => {
             if (key === item.type.toString()) {
-              value.push(item);
+              value.push(item)
             }
           });
         });
-      this.typeGroups = typeGroupsObj;
+      this.typeGroups = typeGroupsObj
     },
     filterData(filter) {
-      this.filter = filter;
+      this.filter = filter
       this.typeCounts = Object.values(this.typeGroupsFiltered).map(
         (item) => item.length
-      );
+      )
     },
-    selectGroup(name) {
-      this.selectedGroup = {};
-      this.selectedGroup[this.$options.OPTIONS_CODES[name].long] = this.typeGroups[name]
-      ;
+    selectGroup(type) {
+      this.selectedGroup = {}
+      //создаем структуру, чтобы передать и данные из апи, и данные из TYPES_OPTIONS
+      this.selectedGroup[this.$options.TYPES_OPTIONS[type].long] = this.typeGroups[type]      
     },
   },
-};
+}
 </script>
 
 <style scoped>
