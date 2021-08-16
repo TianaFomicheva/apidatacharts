@@ -18,7 +18,7 @@
             <span class="title">Поиск</span>
             <v-text-field
               prepend-icon="mdi-clipboard-text-search-outline"
-              label="Поиск по названия и коду отделения"
+              label="Поиск по названию и коду отделения"
               outlined
               v-model="filter"
               @input="filterData(filter)"
