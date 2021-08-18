@@ -275,6 +275,38 @@ export default {
 .commonDataItem:last-child {
   padding-right: 0;
 }
+@media screen and (max-width: 576px){
+#sidebar {
+  padding-top:0;
+  width: 100%;
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+}
+.sidebarItem{
+  padding-right:15px;
+  text-align: center;
+}
+#sidebar>.sidebarItem:last-child{
+  padding-right:0
+}
+#content {
+  width: 100%;
+  padding-left:10px;
+  padding-right:10px;
+}
+#mainPage{
+  display: block;
+}
+#mainColumn{
+  width: 100%;
+}
+#doughnutChartColumn {
+  width: 100%;
+  }
+}
+  
+
 </style>
 <style>
 #app {

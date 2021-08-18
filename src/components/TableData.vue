@@ -64,6 +64,23 @@ export default {
 <style scoped>
 #tableHeader{
    text-align:right;
-   padding-right:16px;
+   padding-right:24px;
 }
+table{
+  font-size:9px;
+  word-wrap:  break-word;
+    overflow-wrap: anywhere;
+}
+
+</style>
+<style >
+@media screen and (max-width: 576px){
+.v-data-table__wrapper, .v-data-table__wrapper td{
+font-size: 14px;
+
+}
+
+}
+
+
 </style>
