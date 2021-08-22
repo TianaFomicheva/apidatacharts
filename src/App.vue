@@ -10,7 +10,7 @@
             :key="name"
             @click="selectGroup(name)"
           >
-            <p class="sidebarItem">{{ $options.TYPES_OPTIONS[name].short }}</p>
+            <p class="sidebarItem">{{ typesOptions[name].short }}</p>
           </div>
         </div>
         <div id="content">
@@ -35,7 +35,7 @@
                     :key="type"
                   >
                     <p class="groupCount">{{ group.length }}</p>
-                    <p>{{ $options.TYPES_OPTIONS[type].long }}</p>
+                    <p>{{ typesOptions[type].long }}</p>
                     <div @click="selectGroup(type)" class="link">
                       <v-icon>mdi-arrow-right</v-icon>Перейти
                     </div>
@@ -44,7 +44,7 @@
               </div>
               <div id="barChartWrapper">
                 <BarChart
-                  v-if="apiData.length > 0"
+
                   :labels="typeShortNames"
                   :counts="typeCounts"
                   class="chartImg"
@@ -53,8 +53,7 @@
               </div>
             </div>
             <div id="doughnutChartColumn">
-              <DoughnutChart
-                v-if="apiData.length > 0"
+              <DoughnutChart             
                 :labels="typeShortNames"
                 :counts="typeCounts"
                 :colors="typeColors"
@@ -63,7 +62,6 @@
                 :key="JSON.stringify(typeGroupsFiltered)"
               />
               <TableData
-                v-if="apiData.length > 0"
                 :colors="typeColors"
                 :labels="typeShortNames"
                 :counts="typeCounts"
@@ -84,16 +82,17 @@
 </template>
 
 <script>
-import { getData } from './api/api.js';
+import { types_options } from "./data/types_options.js";
 import {
   DoughnutChart,
   BarChart,
   TableData,
   SelectedTypeList,
-} from './components';
+} from "./components";
+import { getData } from "./api/api.js";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     DoughnutChart,
     BarChart,
@@ -102,115 +101,88 @@ export default {
   },
   data() {
     return {
-      filter: '',
-      apiData: [],
+      filter: "",
+      apiData: {},
       filteredData: [],
       typeGroups: {},
-      typeCounts: [],
       selectedGroup: {},
     };
   },
 
   created() {
-    getData((data) => {
-      this.apiData = [];
-      this.apiData.push(data);
-      this.formatData(data);
-      this.typeCounts = Object.values(this.typeGroups).map(
-        (item) => item.length
-      );
-    });
-  },
-  TYPES_OPTIONS: {
-    //можно было вынести в отдельный файл и заимпортить, но т.к. данных немного, сделала здесь как $options
-    0: { short: "ФМС", long: "подразделений ФМС", color: "#ff5a45" },
-    1: {
-      short: "ГУВД или МВД",
-      long: "ГУВД или МВД региона",
-      color: "#5264ff",
-    },
-    2: {
-      short: "УВД или ОВД",
-      long: "УВД или ОВД района или города",
-      color: "#92cc6d",
-    },
-    3: {
-      short: "отделений полиции",
-      long: "отделений полиции",
-      color: "#ffd970",
-    },
-  },
-  computed: {
-    typeShortNames() {
-      return Object.values(this.$options.TYPES_OPTIONS).map(
-        (item) => item.short
-      );
-    },
-    typeColors() {
-      return Object.values(this.$options.TYPES_OPTIONS).map(
-        (item) => item.color
-      )
-    },
-    typeGroupsFiltered() {
-      const newObj = {}
-      for (
-        let i = 0;
-        i < Object.entries(this.typeGroups).length;
-        i++
-      ) {
-        newObj[Object.keys(this.typeGroups)[i]] =
-          Object.values(this.typeGroups)[i].filter(
-            (item) =>
-              item.name.search(new RegExp(this.filter, 'i')) !== -1 ||
-              item.code.search(new RegExp(this.filter, 'i')) !== -1
-          );
-      }
-      return newObj
-    },
+  const rsData =   async  () =>{
+      let response = await getData();
+      this.setData(response)
+    }
+    rsData();
   },
 
-  methods: {    
-    loadData() {
-      getData((data) => {
-        this.apiData = []
-        this.typeGroups = []
-        this.typeCounts = []
-        this.apiData.push(data)
-        this.formatData(this.apiData)
-      });
+  computed: {
+    typesOptions() {
+      return types_options ? types_options : false;
+    },
+    typeShortNames() {
+      return Object.values(types_options).map((item) => item.short);
+    },
+    typeColors() {
+      return Object.values(types_options).map((item) => item.color);
+    },
+    typeGroupsFiltered() {
+      const newObj = {};
+      for (let i = 0; i < Object.entries(this.typeGroups).length; i++) {
+        newObj[Object.keys(this.typeGroups)[i]] = Object.values(
+          this.typeGroups
+        )[i].filter(
+          (item) =>
+            item.name.search(new RegExp(this.filter, "i")) !== -1 ||
+            item.code.search(new RegExp(this.filter, "i")) !== -1
+        );
+      }       
+      return newObj;
+    },
+    typeCounts(){
+return Object.values(this.typeGroupsFiltered).map(item => item.length)
+    }
+  },
+
+  methods: {
+    setData(data){
+    this.apiData = [];
+            this.typeGroups = [];
+            this.apiData = Object.assign({}, data.suggestions)
+            this.formatData(this.apiData);
+
     },
     formatData(data) {
       //преобразует пришедшие данные в формат {{type:[options]}, {type:[options]}}
-      const types = Object.keys(this.$options.TYPES_OPTIONS)
-      const typeGroupsObj = {}
-      // //создаем объект с пустыми массивами, по количеству элементов TYPES_OPTIONS     
+      const types = Object.keys(types_options);
+      const typeGroupsObj = {};
+      // //создаем объект с пустыми массивами, по количеству элементов TYPES_OPTIONS
       for (let i = 0; i < types.length; i++) {
-        typeGroupsObj[types[i]] = []
+        typeGroupsObj[types[i]] = [];
       }
       //заполняем объект значениями
-      data.map((data) => data.data)
+      Object.entries(data)
+        .map((data) => JSON.parse(JSON.stringify(data))[1].data)
         .map((item) => {
           Object.entries(typeGroupsObj).forEach(([key, value]) => {
             if (key === item.type.toString()) {
-              value.push(item)
+              value.push(item);
             }
           });
         });
-      this.typeGroups = typeGroupsObj
+      this.typeGroups = typeGroupsObj;      
     },
     filterData(filter) {
-      this.filter = filter
-      this.typeCounts = Object.values(this.typeGroupsFiltered).map(
-        (item) => item.length
-      )
+      this.filter = filter;
     },
     selectGroup(type) {
-      this.selectedGroup = {}
+      this.selectedGroup = {};
       //создаем структуру, чтобы передать и данные из апи, и данные из TYPES_OPTIONS
-      this.selectedGroup[this.$options.TYPES_OPTIONS[type].long] = this.typeGroups[type]      
+      this.selectedGroup[types_options[type].long] = this.typeGroups[type];
     },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -275,56 +247,55 @@ export default {
 .commonDataItem:last-child {
   padding-right: 0;
 }
-@media screen and (max-width: 576px){
-#sidebar {
-  padding-top:0;
-  width: 100%;
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-}
-.sidebarItem{
-  padding-right:15px;
-  text-align: center;
-}
-#sidebar>.sidebarItem:last-child{
-  padding-right:0
-}
-#content {
-  width: 100%;
-  padding-left:10px;
-  padding-right:10px;
-}
-#mainPage{
-  display: block;
-}
-#mainColumn{
-  width: 100%;
-}
-#doughnutChartColumn {
-  width: 100%;
+
+@media screen and (max-width: 576px) {
+  #sidebar {
+    padding-top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .sidebarItem {
+    padding-right: 15px;
+    text-align: center;
+  }
+  #sidebar > .sidebarItem:last-child {
+    padding-right: 0;
+  }
+  #content {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  #mainPage {
+    display: block;
+  }
+  #mainColumn {
+    width: 100%;
+  }
+  #doughnutChartColumn {
+    width: 100%;
   }
 }
-  
-
 </style>
 <style>
+.v-text-field__details {
+  display: none ;
+}
 #app {
   background: #f5f5f5;
-}
-.v-text-field__details {
-  display: none !important;
 }
 .chartImg,
 .v-input__slot,
 #doughnutChartColumn {
-  background: #fff !important;
+  background: #fff ;
 }
 .v-input {
-  margin-left: 10px !important;
+  margin-left: 10px ;
 }
 #bar-chart {
-  height: 200px !important;
-  width: 100% !important;
+  height: 200px;
+  width: 100% ;
 }
 </style>

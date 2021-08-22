@@ -49,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    this.sum = this.counts.reduce((a, b) => a + b)
+    this.sum = this.counts.length >0 ? this.counts.reduce((a, b) => a + b) : 0
     for (let i = 0; i < this.labels.length; i++) {
       this.groupsList[i] = {}
       this.groupsList[i]['name'] = this.labels[i]

@@ -13,10 +13,8 @@ var options = {
     body: JSON.stringify({query: query})
 }
 
-export const getData = (cb)=> {
- fetch(url, options)
-.then(response => response.json())
-.then(data=> data.suggestions)
-.then(result => {cb(result)})
-.catch(error => console.log("error", error))
+export  const getData = async ()=> {
+    return fetch(url, options)
+    .then(response=>response.json()
+    .catch(e=>console.log(e)))
 }
