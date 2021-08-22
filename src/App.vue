@@ -129,10 +129,8 @@ export default {
     },
     typeGroupsFiltered() {
       const newObj = {};
-      for (let i = 0; i < Object.entries(this.typeGroups).length; i++) {
-        newObj[Object.keys(this.typeGroups)[i]] = Object.values(
-          this.typeGroups
-        )[i].filter(
+      for (let [key, val] of Object.entries(this.typeGroups)) {
+        newObj[key] = val.filter(
           (item) =>
             item.name.search(new RegExp(this.filter, "i")) !== -1 ||
             item.code.search(new RegExp(this.filter, "i")) !== -1
@@ -147,7 +145,6 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
 
   methods: {
     setData(data){
-    this.apiData = [];
             this.typeGroups = [];
             this.apiData = Object.assign({}, data.suggestions)
             this.formatData(this.apiData);
@@ -162,8 +159,8 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
         typeGroupsObj[types[i]] = [];
       }
       //заполняем объект значениями
-      Object.entries(data)
-        .map((data) => JSON.parse(JSON.stringify(data))[1].data)
+      Object.values(data)
+        .map((data) => data.data)
         .map((item) => {
           Object.entries(typeGroupsObj).forEach(([key, value]) => {
             if (key === item.type.toString()) {
