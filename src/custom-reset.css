@@ -1,14 +1,14 @@
 #app {
     background: #f5f5f5;
 }
-.chartImg,
-#doughnutChartColumn {
+.chartImg {
     background: #fff;
 }
-
-
 #bar-chart {
     height: 200px;
     width: 100%;
 }
+.layout {
+    margin-top: 5px;
+  }
 

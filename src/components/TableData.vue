@@ -1,6 +1,6 @@
 <template>
   <v-simple-table>
-    <template  v-slot:top><div id="tableHeader">Всего: {{ sum }}</div></template>
+    <template  v-slot:top><div>Всего: {{ sum }}</div></template>
     <template v-slot:default>
       <thead>        
       </thead>
@@ -66,15 +66,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-#tableHeader{
-   text-align:right;
-   padding-right:24px;
-}
-table{
-  font-size:9px;
-  word-wrap:  break-word;
-    overflow-wrap: anywhere;
-}
-
-</style>

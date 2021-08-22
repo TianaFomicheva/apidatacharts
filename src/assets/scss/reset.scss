@@ -17,6 +17,21 @@
         margin-left: 10px;
     }
 }
+
+.v-data-table{
+    margin-top: 20px;
+    &--has-top{
+        &>div{
+            text-align:right;
+       padding-right:24px;
+        }
+    }
+    
+    & table{
+        word-wrap:  break-word;
+          overflow-wrap: anywhere;
+    }
+}
 @media screen and (max-width: 576px) {
     .v-data-table {
         &__wrapper {

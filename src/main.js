@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
+import '../.env'
 import './custom-reset.css'
+import './assets/scss/main.scss'
 import './assets/scss/reset.scss'
 
 Vue.config.productionTip = false
