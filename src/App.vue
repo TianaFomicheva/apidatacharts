@@ -44,7 +44,6 @@
               </div>
               <div id="barChartWrapper">
                 <BarChart
-
                   :labels="typeShortNames"
                   :counts="typeCounts"
                   class="chartImg"
@@ -53,7 +52,7 @@
               </div>
             </div>
             <div id="doughnutChartColumn">
-              <DoughnutChart             
+              <DoughnutChart
                 :labels="typeShortNames"
                 :counts="typeCounts"
                 :colors="typeColors"
@@ -110,10 +109,14 @@ export default {
   },
 
   created() {
-  const rsData =   async  () =>{
-      let response = await getData();
-      this.setData(response)
-    }
+    const rsData = async () => {
+      try {
+        let response = await getData();
+        this.setData(response);
+      } catch (e) {
+        console.log(e);
+      }
+    };
     rsData();
   },
 
@@ -135,20 +138,19 @@ export default {
             item.name.search(new RegExp(this.filter, "i")) !== -1 ||
             item.code.search(new RegExp(this.filter, "i")) !== -1
         );
-      }       
+      }
       return newObj;
     },
-    typeCounts(){
-return Object.values(this.typeGroupsFiltered).map(item => item.length)
-    }
+    typeCounts() {
+      return Object.values(this.typeGroupsFiltered).map((item) => item.length);
+    },
   },
 
   methods: {
-    setData(data){
-            this.typeGroups = [];
-            this.apiData = Object.assign({}, data.suggestions)
-            this.formatData(this.apiData);
-
+    setData(data) {
+      this.typeGroups = [];
+      this.apiData = Object.assign({}, data.suggestions);
+      this.formatData(this.apiData);
     },
     formatData(data) {
       //преобразует пришедшие данные в формат {{type:[options]}, {type:[options]}}
@@ -168,14 +170,16 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
             }
           });
         });
-      this.typeGroups = typeGroupsObj;      
+      this.typeGroups = typeGroupsObj;
     },
     filterData(filter) {
       this.filter = filter;
     },
     selectGroup(type) {
-      this.selectedGroup =  Object.assign({}, {longName:types_options[type].long, options:this.typeGroups[type]})
-
+      this.selectedGroup = Object.assign(
+        {},
+        { longName: types_options[type].long, options: this.typeGroups[type] }
+      );
     },
   },
 };
@@ -275,23 +279,4 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
   }
 }
 </style>
-<style>
-.v-text-field__details {
-  display: none ;
-}
-#app {
-  background: #f5f5f5;
-}
-.chartImg,
-.v-input__slot,
-#doughnutChartColumn {
-  background: #fff ;
-}
-.v-input {
-  margin-left: 10px ;
-}
-#bar-chart {
-  height: 200px;
-  width: 100% ;
-}
-</style>
+

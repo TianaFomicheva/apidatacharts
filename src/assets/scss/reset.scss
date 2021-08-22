@@ -1,0 +1,29 @@
+.v-text-field {
+    &__details {
+        display: none;
+    }
+}
+.v-text-field {
+    &--outlined {
+        & > .v-input__control {
+            & > .v-input__slot {
+                background-color: #fff;
+            }
+        }
+    }
+}
+.v-input__icon {
+    &--prepend {
+        margin-left: 10px;
+    }
+}
+@media screen and (max-width: 576px) {
+    .v-data-table {
+        &__wrapper {
+            &,
+            & td {
+                font-size: 14px;
+            }
+        }
+    }
+}

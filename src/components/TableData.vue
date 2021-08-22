@@ -78,14 +78,3 @@ table{
 }
 
 </style>
-<style >
-@media screen and (max-width: 576px){
-.v-data-table__wrapper, .v-data-table__wrapper td{
-font-size: 14px;
-
-}
-
-}
-
-
-</style>
