@@ -35,12 +35,11 @@ export default {
     },
   },
   created(){
-    //нулевой элемент т.к. согласно заданной структуре приходит объект с одним элементом
-    this.typeName = Object.keys(this.list)[0]
+    this.typeName = this.list.longName
   },
   computed: {
     filteredList() {
-        return  Object.values(this.list)[0].filter(item => item.name.search(new RegExp(this.filter, 'i')) !== -1 || item.code.search(new RegExp(this.filter, 'i')) !== -1) 
+        return  this.list.options.filter(item => item.name.search(new RegExp(this.filter, 'i')) !== -1 || item.code.search(new RegExp(this.filter, 'i')) !== -1) 
     },
   },
   methods: {

@@ -32,8 +32,7 @@
 export default {
   name: 'TableData',
   data() {
-    return {
-      groupsList: [],
+    return {  
       sum: 0,
     }
   },
@@ -50,15 +49,21 @@ export default {
   },
   mounted() {
     this.sum = this.counts.length >0 ? this.counts.reduce((a, b) => a + b) : 0
-    for (let i = 0; i < this.labels.length; i++) {
-      this.groupsList[i] = {}
-      this.groupsList[i]['name'] = this.labels[i]
-      this.groupsList[i]['percent'] =
-        this.counts[i] !== 0 ? (this.sum / this.counts[i]) * 100 : 0
-      this.groupsList[i]['count'] = this.counts[i]
-      this.groupsList[i]['color'] = this.colors[i]
-    }
+
   },
+  computed:{
+    groupsList(){
+      const arr = []
+      this.labels.map((item,ind)=>{
+        arr[ind] = {}
+        arr[ind].name = item
+        arr[ind].count = this.counts[ind]
+        arr[ind].percent = this.counts[ind] !== 0 ? (this.sum / this.counts[ind]) * 100 : 0
+        arr[ind].color = this.colors[ind]
+      })
+      return arr
+    },
+  }
 }
 </script>
 <style scoped>

@@ -155,8 +155,8 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
       const types = Object.keys(types_options);
       const typeGroupsObj = {};
       // //создаем объект с пустыми массивами, по количеству элементов TYPES_OPTIONS
-      for (let i = 0; i < types.length; i++) {
-        typeGroupsObj[types[i]] = [];
+      for (let i of types) {
+        typeGroupsObj[i] = [];
       }
       //заполняем объект значениями
       Object.values(data)
@@ -174,9 +174,8 @@ return Object.values(this.typeGroupsFiltered).map(item => item.length)
       this.filter = filter;
     },
     selectGroup(type) {
-      this.selectedGroup = {};
-      //создаем структуру, чтобы передать и данные из апи, и данные из TYPES_OPTIONS
-      this.selectedGroup[types_options[type].long] = this.typeGroups[type];
+      this.selectedGroup =  Object.assign({}, {longName:types_options[type].long, options:this.typeGroups[type]})
+
     },
   },
 };
